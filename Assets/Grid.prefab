@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1037478918455206090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4145655788593999576}
+  - component: {fileID: 37733263538885150}
+  - component: {fileID: 8259354679425201911}
+  m_Layer: 0
+  m_Name: Grid
+  m_TagString: Island
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4145655788593999576
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037478918455206090}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &37733263538885150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037478918455206090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2c1f6ca2ec086b4891039e1cdc6221c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forestTerrainMaterial: {fileID: 2100000, guid: efa4da50e22ee3a40b599f3751a4c0e1, type: 2}
+  forestGrassMaterial: {fileID: 2100000, guid: 0e6c3b12a86c9cb4a87f253cfec77842, type: 2}
+  forestTreePrefabs:
+  - {fileID: 137650, guid: 826b6a0b570e8460990010fa615b5a2a, type: 3}
+  - {fileID: 192044, guid: 19682540d8a014522a319b1cf788aee2, type: 3}
+  - {fileID: 191266, guid: c44bd9bdc114d4a60932c0087d9d1732, type: 3}
+  desertTerrainMaterial: {fileID: 2100000, guid: 38d94ed27d8d4614aaf496ff90dc2520, type: 2}
+  desertGrassMaterial: {fileID: 2100000, guid: 0e6c3b12a86c9cb4a87f253cfec77842, type: 2}
+  edgeMaterial: {fileID: 2100000, guid: 06dc5808ca3f54745b2b49e30f109f7f, type: 2}
+  pondMaterial: {fileID: 2100000, guid: 74179f13849fb76428abca243147c444, type: 2}
+  waterfallMaterial: {fileID: 2100000, guid: 86a50e596375fa448802a03b45984079, type: 2}
+  cloudMaterial: {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  currentBiome: 0
+  directionalTextures:
+  - {fileID: 2800000, guid: 9273b0666f47d5e4e86165bf96cb7404, type: 3}
+  - {fileID: 2800000, guid: 6e3abed3edda0ae4b876a53ee95f7d37, type: 3}
+  - {fileID: 2800000, guid: 80d6d2d5125a9fa43999ca6f99876b08, type: 3}
+  - {fileID: 2800000, guid: 1cc842c6c568a764eaec781aab3e01b5, type: 3}
+  size: 70
+  depth: 40
+  minSatellites: 4
+  maxSatellites: 8
+  satelliteDistance: 0.45
+  satelliteSizeMin: 0.2
+  satelliteSizeMax: 0.5
+  bridgeThickness: 0.4
+  warpScale: 0.03
+  warpAmount: 2.5
+  shapeNoiseScale: 0.11
+  shapeDistortion: 0.88
+  spikeNoiseScale: 0.23
+  hillHeight: 8.1
+  mountainBoost: 2.55
+  hillNoiseScale: 0.14
+  dynamicPondLevel: 3.5
+  jitterAmount: 0.4
+  jitterScale: 0.3
+  treeNoiseScale: 3
+  treeDensity: 3.5
+--- !u!64 &8259354679425201911
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037478918455206090}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
