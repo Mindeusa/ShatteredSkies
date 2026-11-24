@@ -84,6 +84,8 @@ MonoBehaviour:
   jitterScale: 0.3
   treeNoiseScale: 3
   treeDensity: 3.5
+  outlineRounding: 0.952
+  rimInset: 0.45
 --- !u!64 &8259354679425201911
 MeshCollider:
   m_ObjectHideFlags: 0

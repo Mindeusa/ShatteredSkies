@@ -259,53 +259,81 @@ namespace PCG // Ligger i samma namespace som du hade!
                 }
             }
 
-            vertexOffsets = new Vector2[size + 1, size + 1];
-            for (int vz = 0; vz <= size; vz++)
-                for (int vx = 0; vx <= size; vx++)
-                    vertexOffsets[vx, vz] = new Vector2(vx, vz);
-
-            for (int i = 0; i < 20; i++)
-            {
-                Vector2[,] newOffsets = new Vector2[size + 1, size + 1];
-                for (int vz = 0; vz <= size; vz++)
-                {
-                    for (int vx = 0; vx <= size; vx++)
-                    {
-                        newOffsets[vx, vz] = vertexOffsets[vx, vz];
-
-                        int skyCount = 0; int waterCount = 0; int landCount = 0;
-
-                        void CheckCell(int cx, int cz)
-                        {
-                            if (cx >= 0 && cx < size && cz >= 0 && cz < size)
-                            {
-                                if (skyCells[cx, cz]) skyCount++;
-                                else if (waterCells[cx, cz] || waterfallCells[cx, cz]) waterCount++;
-                                else landCount++;
-                            }
-                            else skyCount++;
-                        }
-
-                        CheckCell(vx, vz); CheckCell(vx - 1, vz); CheckCell(vx, vz - 1); CheckCell(vx - 1, vz - 1);
-
-                        bool isBorder = (skyCount > 0 && skyCount < 4) || (waterCount > 0 && waterCount < 4);
-
-                        if (landCount > 0 || waterCount > 0)
-                        {
-                            Vector2 sum = Vector2.zero; int neighbors = 0;
-                            if (vx > 0) { sum += vertexOffsets[vx - 1, vz]; neighbors++; }
-                            if (vx < size) { sum += vertexOffsets[vx + 1, vz]; neighbors++; }
-                            if (vz > 0) { sum += vertexOffsets[vx, vz - 1]; neighbors++; }
-                            if (vz < size) { sum += vertexOffsets[vx, vz + 1]; neighbors++; }
-
-                            float smoothStrength = isBorder ? 0.65f : 0.25f;
-                            newOffsets[vx, vz] = Vector2.Lerp(vertexOffsets[vx, vz], sum / neighbors, smoothStrength);
-                        }
-                    }
-                }
-                vertexOffsets = newOffsets;
-            }
         }
+
+        [SerializeField, Range(0f, 1f)] private float outlineRounding = 0.9f;
+
+        // Relax the two neighbours along the coastline. Averaging all four grid
+        // neighbours at a corner would return the original square-grid position.
+        void RoundOutline()
+        {
+            int count = size + 1;
+            var current = vertexOffsets ?? new Vector2[count, count];
+            var next = new Vector2[count, count];
+            var links = new byte[count, count];
+            for (int x = 0; x < count; x++)
+            for (int z = 0; z < count; z++)
+            {
+                current[x, z] = new Vector2(x, z);
+                bool sw = IsSky(x - 1, z - 1), se = IsSky(x, z - 1);
+                bool nw = IsSky(x - 1, z), ne = IsSky(x, z);
+                if (sw != nw) links[x, z] |= 1; // west
+                if (se != ne) links[x, z] |= 2; // east
+                if (sw != se) links[x, z] |= 4; // south
+                if (nw != ne) links[x, z] |= 8; // north
+            }
+
+            for (int pass = 0; pass < 6; pass++)
+            {
+                for (int x = 0; x < count; x++)
+                for (int z = 0; z < count; z++)
+                {
+                    Vector2 origin = new Vector2(x, z);
+                    byte edge = links[x, z];
+                    // Hold ambiguous diagonal contacts and outer support vertices.
+                    if (edge == 15 || (edge == 0 && (x == 0 || z == 0 || x == size || z == size)))
+                    {
+                        next[x, z] = origin;
+                        continue;
+                    }
+                    Vector2 sum = Vector2.zero;
+                    if (edge == 0 || (edge & 1) != 0) sum += current[x - 1, z];
+                    if (edge == 0 || (edge & 2) != 0) sum += current[x + 1, z];
+                    if (edge == 0 || (edge & 4) != 0) sum += current[x, z - 1];
+                    if (edge == 0 || (edge & 8) != 0) sum += current[x, z + 1];
+                    Vector2 average = sum * (edge == 0 ? 0.25f : 0.5f);
+                    Vector2 relaxed = Vector2.Lerp(current[x, z], average, outlineRounding * 0.7f);
+                    // Limit contraction around one-cell bridges and small cutouts.
+                    next[x, z] = origin + Vector2.ClampMagnitude(relaxed - origin, 0.62f);
+                }
+                var swap = current;
+                current = next;
+                next = swap;
+            }
+            // A tight bend can squeeze the neighbouring cell. Reduce only the
+            // offending offsets until both possible triangle diagonals are safe.
+            bool reduced;
+            do
+            {
+                reduced = false;
+                for (int x = 0; x < size; x++)
+                for (int z = 0; z < size; z++)
+                {
+                    Vector2 a = current[x, z], b = current[x + 1, z];
+                    Vector2 c = current[x, z + 1], d = current[x + 1, z + 1];
+                    if (Cross2D(b-a, c-a) > 0.12f && Cross2D(b-a, d-b) > 0.12f &&
+                        Cross2D(d-c, c-a) > 0.12f && Cross2D(d-c, d-b) > 0.12f) continue;
+                    current[x,z] = (a + new Vector2(x,z)) * 0.5f;
+                    current[x+1,z] = (b + new Vector2(x+1,z)) * 0.5f;
+                    current[x,z+1] = (c + new Vector2(x,z+1)) * 0.5f;
+                    current[x+1,z+1] = (d + new Vector2(x+1,z+1)) * 0.5f;
+                    reduced = true;
+                }
+            } while (reduced);
+            vertexOffsets = current;
+        }
+
+        static float Cross2D(Vector2 a, Vector2 b) => a.x * b.y - a.y * b.x;
 
         bool IsWater(int cx, int cz)
         {
@@ -426,6 +454,7 @@ namespace PCG // Ligger i samma namespace som du hade!
 
         public void UpdateMeshes()
         {
+            RoundOutline();
             DrawTerrainMesh();
             DrawEdgeMesh();
             GenerateSteam();
@@ -462,9 +491,19 @@ namespace PCG // Ligger i samma namespace som du hade!
             return ApplyJitter(vx, y, vz, yJit);
         }
 
+        [SerializeField, Range(0f, 0.45f)] private float rimInset = 0.3f;
+
         Vector3 GetBottomVertex(int vx, int vz)
         {
-            return ApplyJitter(vx, bottomHeights[vx, vz], vz, 1f);
+            Vector3 bottom = ApplyJitter(vx, bottomHeights[vx, vz], vz, 1f);
+            Vector3 outward = GetWaterfallPush(vx, vz);
+            if (outward == Vector3.zero) return bottom;
+
+            bool touchesWaterfall = IsWaterfall(vx, vz) || IsWaterfall(vx - 1, vz)
+                || IsWaterfall(vx, vz - 1) || IsWaterfall(vx - 1, vz - 1);
+            if (touchesWaterfall) return bottom;
+
+            return bottom - outward.normalized * rimInset;
         }
 
         void AddFace(List<Vector3> verts, List<int> tris, List<Vector2> uvs, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 v3, float ux, float uz, bool invert = false)
@@ -643,10 +682,10 @@ namespace PCG // Ligger i samma namespace som du hade!
 
                         AddFace(verts, tris, null, b0, b1, b2, b3, cx, cz, true);
 
-                        if (cx == 0 || (skyCells[cx - 1, cz] && !waterfallCells[cx - 1, cz])) AddFace(verts, tris, null, t0, t2, b0, b2, cx, cz);
-                        if (cx == size - 1 || (skyCells[cx + 1, cz] && !waterfallCells[cx + 1, cz])) AddFace(verts, tris, null, t3, t1, b3, b1, cx, cz);
-                        if (cz == 0 || (skyCells[cx, cz - 1] && !waterfallCells[cx, cz - 1])) AddFace(verts, tris, null, t2, t3, b2, b3, cx, cz);
-                        if (cz == size - 1 || (skyCells[cx, cz + 1] && !waterfallCells[cx, cz + 1])) AddFace(verts, tris, null, t1, t0, b1, b0, cx, cz);
+                        if (IsSky(cx - 1, cz)) AddFace(verts, tris, null, t0, t2, b0, b2, cx, cz);
+                        if (IsSky(cx + 1, cz)) AddFace(verts, tris, null, t3, t1, b3, b1, cx, cz);
+                        if (IsSky(cx, cz - 1)) AddFace(verts, tris, null, t2, t3, b2, b3, cx, cz);
+                        if (IsSky(cx, cz + 1)) AddFace(verts, tris, null, t1, t0, b1, b0, cx, cz);
                     }
                 }
             }

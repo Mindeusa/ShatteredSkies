@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3ad8fadac8c04775a7c18cdbe0ba9dd1
+ModelImporter:
+  serializedVersion: 22200
+  meshes:
+    globalScale: 1
+    useFileScale: 0
+    importBlendShapes: 0
+    addColliders: 0
+  tangentSpace:
+    normalImportMode: 0
+    tangentImportMode: 2
+  externalObjects: {}
+  userData: 

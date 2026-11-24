@@ -1,4 +1,4 @@
-Shader "ShatteredSkies/Shattered Heavens"
+Shader "ShatteredSkies/RiftlandsV2"
 {
     Properties
     {
@@ -70,3 +70,6 @@ Shader "ShatteredSkies/Shattered Heavens"
     }
     Fallback Off
 }
+
+
+

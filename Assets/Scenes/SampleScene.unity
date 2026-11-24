@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 0.8
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 22ed80a9214a4196996e527e9db85fab, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 65564eed146e4018a8105aa76d4e79f0, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -169,6 +169,56 @@ MonoBehaviour:
   viewDistance: 2
   islandSpawnChance: 0.4
   positionJitter: 100
+--- !u!1 &700984187
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 700984189}
+  - component: {fileID: 700984188}
+  m_Layer: 0
+  m_Name: Island Cloud Field
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &700984188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700984187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c48f5e560fa5425cb007c709f126eb39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShatteredSkies.Clouds.CloudField
+  bankPrefab: {fileID: 7734785884760311451, guid: 35e1b65449ba39e4f855633c765cf3da, type: 3}
+  follow: {fileID: 0}
+  seed: 1241
+  spacing: 68
+  altitudeRange: {x: -28, y: 10}
+  sizeRange: {x: 0.55, y: 1.55}
+--- !u!4 &700984189
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700984187}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1544490691
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,3 +661,4 @@ SceneRoots:
   - {fileID: 1544490695}
   - {fileID: 2100326145}
   - {fileID: 212540928}
+  - {fileID: 700984189}
